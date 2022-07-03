@@ -22,32 +22,77 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+(require 'json)
 (require 'youdao-dictionary)
 
+(defgroup eic/ nil
+  "EIC group."
+  :group 'eic/
+  :prefix 'eic/)
+
+(defvar eic/buffer-name "*eic*"
+  "The name of eic buffer.")
+
 (define-namespace eic/
+
+(defun check-path ()
+  "Check file with saved words."
+  (let ((words-file (expand-file-name ".eic-words.json" "~")
+								  "Default eic-words file."))
+	(when (not (file-exists-p words-file))
+	  (f-write "{}" 'utf-8 eic/cache-word-file-path))
+	words-file))
 
 (defun get-context ()
   "Get a sentence as context."
   (interactive)
+  ;; TODO split '\n'.
   (let* ((word-context-start (backward-sentence))
 		 (word-context-end (forward-sentence)))
+	;; TODO more context body with date, times
 	(buffer-substring-no-properties
 	 word-context-start word-context-end)))
 
 (defun capture-word (&optional word)
   "Capture word WORD and save it."
   (interactive)
-  (let* ((word-yd-info (youdao-dictionary--request (if (null word)
+  ;; TODO dispatch to different dictionary
+  (let* ((words-cache-file (eic/check-path))
+		 (words-cache-list (json-read-file words-cache-file))
+		 (all-words-cache (make-hash-table))
+
+		 (word-yd-info (youdao-dictionary--request (if (null word)
 													   (thing-at-point 'word)
 													 word)))
+		 (word-yd-eng (downcase (cdr (assoc 'query word-yd-info))))
+		 (word-yd-basic (cdr (assoc 'basic word-yd-info)))
+		 (word-yd-phonetic (cdr (assoc 'us-phonetic word-yd-basic)))
+		 (word-yd-explains (cdr (assoc 'explains word-yd-basic)))
 		 (word-context (get-context)))
 
-	;; DEBUG
-	(message "DEBUG: %s\n%s\n"
-			 word-yd-info
-			 word-context)
+	(cl-block nil
+	  (when (null word-yd-explains)
+		(message "%s is not a word" word-yd-eng)
+		(cl-return t))
 
-	))
+	  (mapc
+	   ;; convert exist words list to hashtable
+	   (lambda (item)
+		 (puthash (car item) (cdr item) all-words-cache))
+	   words-cache-list)
+
+	  ;; TODO check exists
+	  (puthash word-yd-eng (list (cons "explains" word-yd-explains)
+								 (cons "phonetic" word-yd-phonetic)
+								 (cons "capture-context" word-context))
+			   all-words-cache)
+ 
+	  (let ((tmp-json-string (json-encode all-words-cache)))
+		(progn
+		  (message "DEBUG tmp-json-string: %s" tmp-json-string)
+		  (f-write-text tmp-json-string 'utf-8 words-cache-file)))
+	  )))
 )
 
 (provide 'eic)
