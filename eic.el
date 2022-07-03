@@ -76,6 +76,8 @@
 		(message "%s is not a word" word-yd-eng)
 		(cl-return t))
 
+	  (message "%s: %s\n" word-yd-eng word-yd-explains)
+
 	  (mapc
 	   ;; convert exist words list to hashtable
 	   (lambda (item)
@@ -90,7 +92,7 @@
  
 	  (let ((tmp-json-string (json-encode all-words-cache)))
 		(progn
-		  (message "DEBUG tmp-json-string: %s" tmp-json-string)
+		  ;;		  (message "DEBUG tmp-json-string: %s" tmp-json-string)
 		  (f-write-text tmp-json-string 'utf-8 words-cache-file)))
 	  )))
 )
