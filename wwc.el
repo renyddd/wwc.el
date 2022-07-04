@@ -41,7 +41,7 @@
   (let ((words-file (expand-file-name ".wwc-words.json" "~")
 								  "Default wwc-words file."))
 	(when (not (file-exists-p words-file))
-	  (f-write "{}" 'utf-8 wwc/cache-word-file-path))
+	  (f-write "{}" 'utf-8 words-file))
 	words-file))
 
 (defun get-context ()
