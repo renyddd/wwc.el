@@ -1,32 +1,32 @@
-#+title: English In Context
+#+title: Words With Context
 #+date: <2022-07-03 Sun>
 
-* eic.el
-`eic.el` helps you capture English In Context.
-`eic.el` was inspired by [[https://github.com/EvanMeek/shengci.el][shengci.el]] writen by EvanMeek.
+* wwc.el
+'wwc.el' helps you capture English In Context.
+'wwc.el' was inspired by [[https://github.com/EvanMeek/shengci.el][shengci.el]] writen by EvanMeek.
 
 * Description
-`eic.el` captures words and its context for you with `eic/capture-word`.
+'wwc.el' captures words and its context for you with `wwc/capture-word`.
 
 You can set it up like this:
 
 1. with leaf
 #+begin_src elisp
-  ;; eic
-  (load "~/eic/eic.el")
-  (leaf eic
+  ;; wwc
+  (load "~/wwc/wwc.el")
+  (leaf wwc
     :bind
-    ("C-c d c" . eic/capture-word))
+    ("C-c d c" . wwc/capture-word))
 #+end_src
 
 2. or
 #+begin_src elisp
-  (load "~/eic/eic.el")
-  (require 'eic)
-  (global-set-key (kbd "C-c d c") 'eic/capture-word)
+  (load "~/wwc/wwc.el")
+  (require 'wwc)
+  (global-set-key (kbd "C-c d c") 'wwc/capture-word)
 #+end_src
 
-The captured words stores in `~/eic-words.json` like this:
+The captured words stores in `~/wwc-words.json` like this:
 #+begin_src json
   {
 	"only": {

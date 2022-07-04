@@ -1,4 +1,4 @@
-;;; eic.el --- English In Context
+;;; wwc.el --- English In Context
 
 ;; Version: 0.0.1
 
@@ -26,22 +26,22 @@
 (require 'json)
 (require 'youdao-dictionary)
 
-(defgroup eic/ nil
-  "EIC group."
-  :group 'eic/
-  :prefix 'eic/)
+(defgroup wwc/ nil
+  "WWC group."
+  :group 'wwc/
+  :prefix 'wwc/)
 
-(defvar eic/buffer-name "*eic*"
-  "The name of eic buffer.")
+(defvar wwc/buffer-name "*wwc*"
+  "The name of wwc buffer.")
 
-(define-namespace eic/
+(define-namespace wwc/
 
 (defun check-path ()
   "Check file with saved words."
-  (let ((words-file (expand-file-name ".eic-words.json" "~")
-								  "Default eic-words file."))
+  (let ((words-file (expand-file-name ".wwc-words.json" "~")
+								  "Default wwc-words file."))
 	(when (not (file-exists-p words-file))
-	  (f-write "{}" 'utf-8 eic/cache-word-file-path))
+	  (f-write "{}" 'utf-8 wwc/cache-word-file-path))
 	words-file))
 
 (defun get-context ()
@@ -58,7 +58,7 @@
   "Capture word WORD and save it."
   (interactive)
   ;; TODO dispatch to different dictionary
-  (let* ((words-cache-file (eic/check-path))
+  (let* ((words-cache-file (wwc/check-path))
 		 (words-cache-list (json-read-file words-cache-file))
 		 (all-words-cache (make-hash-table))
 
@@ -97,5 +97,5 @@
 	  )))
 )
 
-(provide 'eic)
-;;; eic.el ends here
+(provide 'wwc)
+;;; wwc.el ends here
